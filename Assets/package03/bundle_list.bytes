@@ -1,0 +1,53 @@
+luanet.load_assembly('UnityEngine');
+GameObject = luanet.import_type('UnityEngine.GameObject');
+Player = luanet.import_type('Player');
+Enemy = luanet.import_type('Completed.Enemy');
+BagSystem = luanet.import_type('BagSystem');
+BoardManager = luanet.import_type('Completed.BoardManager');
+ResourcesManager = luanet.import_type('ResourcesManager');
+GameManager = luanet.import_type('Completed.GameManager');
+
+list = {
+{
+name = "AcidSnail",
+ID = "AS_02",
+type = 1,
+comment = "Boss1",
+withSkill = true,
+effect = "AcidHit",
+rate = 0.5
+},
+{
+name = "Acid",
+ID = "AS_01",
+type = 7,
+comment = "Acid released by AcidSnail.",
+using_times = 1,
+effect = "AcidTouch",
+fading_time = 4,
+use_direction = false
+}
+};
+
+function AcidHit(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+
+local pos = a.transform.position;
+local acid = ResourcesManager.instance:GetItemIndex("AS_01");
+pos:Set(pos.x-1, pos.y, pos.z);
+GameManager.instance.boardScript:LayoutObject(acid, pos);
+pos:Set(pos.x+2, pos.y, pos.z);
+GameManager.instance.boardScript:LayoutObject(acid, pos);
+pos:Set(pos.x-1, pos.y+1, pos.z);
+GameManager.instance.boardScript:LayoutObject(acid, pos);
+pos:Set(pos.x, pos.y-2, pos.z);
+GameManager.instance.boardScript:LayoutObject(acid, pos);
+end
+
+function AcidTouch(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+
+b:BeAttacked(30);
+end

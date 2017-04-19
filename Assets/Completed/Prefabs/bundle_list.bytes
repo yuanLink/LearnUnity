@@ -1,0 +1,37 @@
+luanet.load_assembly('UnityEngine');
+GameObject = luanet.import_type('UnityEngine.GameObject');
+Player = luanet.import_type('Player');
+
+
+list = {
+{
+name = "Enemy1",
+ID = "0",
+type = 0,
+comment = "Enemy1",
+withSkill = true,
+effect = "hit1",
+rate = 0.5
+},
+{
+name = "Enemy2",
+ID = "1",
+type = 0,
+comment = "Enemy2",
+withSkill = true,
+effect = "hit2",
+rate = 0.5
+}
+};
+
+function hit1(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+b:BeAttacked(20);
+end
+
+function hit2(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+b:BeAttacked(30);
+end

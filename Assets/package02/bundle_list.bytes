@@ -1,0 +1,118 @@
+luanet.load_assembly('UnityEngine');
+GameObject = luanet.import_type('UnityEngine.GameObject');
+Player = luanet.import_type('Player');
+Enemy = luanet.import_type('Enemy');
+BagSystem = luanet.import_type('BagSystem');
+
+list = {
+{
+name = "Shotgun",
+ID = "WYS_01",
+type = 4,
+comment = "A powerful shotgun,fantastic!Although ammo is rare.I should use it carefully.",
+using_times = -1,
+effect = "ShotgunFire",
+fading_time = 0,
+use_direction = true
+},
+{
+name = "Pistol",
+ID = "WYS_02",
+type = 4,
+comment = "A normal psitol.I can use it to defense myself.No more melee!",
+using_times = -1,
+effect = "PistolFire",
+fading_time = 0,
+use_direction = true
+},
+{
+name = "PistolAmmo",
+ID = "WYS_04",
+type = 3,
+comment = "Pistol Ammo,better with a pistol.",
+using_times = 1,
+effect = "CannotUse",
+fading_time = 0,
+use_direction = false
+},
+{
+name = "ShotgunAmmo",
+ID = "WYS_03",
+type = 3,
+comment = "Shotgun Ammo,Powerful to destroy anybody.",
+using_times = 1,
+effect = "CannotUse",
+fading_time = 0,
+use_direction = false
+},
+{
+name = "Axe",
+ID = "WYS_05",
+type = 4,
+comment = "Fire Axe,standard weapon to fight at this place.",
+using_times = 1,
+effect = "AxeEquip",
+fading_time = 0,
+use_direction = false
+},
+{
+name = "BodyAmor",
+ID = "WYS_06",
+type = 4,
+comment = "It can help resist attacking from those dead bodies.",
+using_times = 1,
+effect = "AmorEquip",
+fading_time = 0,
+use_direction = false
+}
+};
+
+function ShotgunFire(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+local c = b:CheckDirection(args);
+local d = b:GetComponent("Animator");
+
+
+if ((c ~= nil) and (BagSystem.instance:ReduceItemByID("WYS_03")))
+then
+	d:SetTrigger("playerShotgun");
+	c:BeAttack(30);
+	return true;
+else
+	return false;
+end
+end
+
+function PistolFire(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+local c = b:CheckDirection(args);
+local d = b:GetComponent("Animator");
+
+
+if ((c ~= nil) and (BagSystem.instance:ReduceItemByID("WYS_04")))
+then
+	d:SetTrigger("playerPistol");
+	c:BeAttack(10);
+	return true;
+else
+	return false;
+end
+end
+
+function CannotUse()
+return false;
+end
+
+function AxeEquip()
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+b:RaiseAtk(5);
+end
+
+function AmorEquip()
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+b:RaiseDef(5);
+end

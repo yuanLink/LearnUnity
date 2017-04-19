@@ -1,0 +1,36 @@
+luanet.load_assembly('UnityEngine');
+GameObject = luanet.import_type('UnityEngine.GameObject');
+Player = luanet.import_type('Player');
+
+list = {
+{
+name = "Food",
+ID = "F01",
+type = 2,
+comment = "Some simple fruit,not yummy,but helps.",
+using_times = 1,
+effect = "eatF01",
+fading_time = 0
+},
+{
+name = "Soda",
+ID = "F02",
+type = 2,
+comment = "Several bottles of soda,which can kill my thirst.",
+using_times = 2,
+effect = "eatF02",
+fading_time = 0
+}
+};
+
+function eatF01(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+b:GetFood(11);
+end
+
+function eatF02(args)
+local a = GameObject.Find("Player");
+local b = a:GetComponent("Player");
+b:GetFood(21);
+end
