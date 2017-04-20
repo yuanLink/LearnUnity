@@ -7,6 +7,7 @@ public class ManController : MonoBehaviour {
 
 	private Rigidbody2D r;
 	private GameObject camera;
+	private bool signalAttack; // 攻击信号，当发动攻击时为true，完成攻击后设为false
 
 	//设定人物的朝向（改变transform的scale的x值，为负数则水平翻转）
 	public int direction = 1;
@@ -41,7 +42,7 @@ public class ManController : MonoBehaviour {
 		float moveVertical = Input.GetAxisRaw("Vertical");
 		//如果在水平方向上有移动
 		//Debug.Log(moveHorizontal);
-
+		// 此时是跳跃的时候左右移动
 		if (transform.position.y - transform.position.z * Mathf.Tan (3.14159f / 3) > 0.01f) {
 			if (moveHorizontal != 0) {
 				//根据获取的值的符号来决定人物的朝向，注意转换成int类型之后，direction的取值为-1或1
@@ -50,6 +51,7 @@ public class ManController : MonoBehaviour {
 				if ((r.velocity.x - moveHorizontal * 2.0f <= 0 && moveHorizontal > 0)||
 					(r.velocity.x - moveHorizontal * 2.0f >= 0 && moveHorizontal < 0))
 					r.AddForce (new Vector2 (moveHorizontal * 2.0f, 0.0f));
+					// Debug.Log ("movig");
 				    gameObject.GetComponent<PolygonCollider2D>().enabled = false;
 			}
 		} else {
@@ -130,6 +132,7 @@ public class ManController : MonoBehaviour {
 
 	public void attack(float distance)
 	{
+		signalAttack = true;
 		r.velocity = new Vector2 (direction * 100.0f, r.velocity.y);
 		Vector2 start, end;
 		start = new Vector2 (transform.position.x, transform.position.y);
@@ -157,6 +160,8 @@ public class ManController : MonoBehaviour {
 	public void attack_end ()
 	{
 		r.velocity = new Vector2 (0, r.velocity.y);
+		Debug.Log ("Attack end");
+		signalAttack = false;
 	}
 
 	IEnumerator Pause(float duration)
@@ -167,12 +172,17 @@ public class ManController : MonoBehaviour {
 		
 	protected void OnTriggerEnter2D(Collider2D c)
 	{
-		Vector2 velTemp = new Vector2 (r.velocity.x*Time.deltaTime, 1.0f);
+		Vector2 velTemp = new Vector2 (- r.velocity.x*Time.deltaTime*2, 1.0f);
 		//r.velocity = new Vector2(0.0f, 0.0f);
-		animator.SetTrigger ("collision");
-		r.velocity = velTemp;
-		//r.AddForce (velTemp);
-		Debug.Log (r.velocity);
-		//r.AddForce (5.0f, 5.0f);
+		if(signalAttack){
+			attack_end ();
+			//signalAttack = false;
+			animator.SetTrigger ("collision");
+			r.velocity = velTemp;
+			//r.AddForce (velTemp);
+			Debug.Log ("Collision");
+			Debug.Log (r.velocity);
+			//r.AddForce (5.0f, 5.0f);
+		}
 	}
 }
